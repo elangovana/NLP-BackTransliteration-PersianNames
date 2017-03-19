@@ -100,7 +100,7 @@ score_model.editdistance_scorer <- function(object){
 write_to_file.editdistance_scorer <- function(object){
   flog.info("Running write_to_file.editdistance_scorer")
   write.csv(object$result,file.path(object$output_dir, "results.csv"),row.names=FALSE)
-  write.csv(object$resultEditDistance, file.path(object$output_dir, "leventaindistance.csv"))
+ #write.csv(object$resultEditDistance, file.path(object$output_dir, "leventaindistance.csv"))
 }
 
 
