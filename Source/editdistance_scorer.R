@@ -60,20 +60,24 @@ predict.editdistance_scorer <- function(object){
   rownames(lventian_edit_dist)<- object$traindata$PersionName
   colnames(lventian_edit_dist)<- object$namesdata$EnglishName
  
-  #Obtain max score
-  maxScore<-apply(lventian_edit_dist, 1, function(x) min(x))
+  #Obtain max score or min cost
+  mincost<-apply(lventian_edit_dist, 1, function(x) min(x))
+  #Get any one matching english name with min cost
   bestmatch<-apply(lventian_edit_dist, 1, function(x) colnames(lventian_edit_dist)[which.min(x)])
+  #Get the count of english names with  the lowest cost
   bestmatchcount<-apply(lventian_edit_dist, 1, function(x) length(colnames(lventian_edit_dist)[(x==min(x))]))
+  #Get the english names with  the lowest cost
   bestmatchedstrings<-apply(lventian_edit_dist, 1, function(x) paste(colnames(lventian_edit_dist)[(x==min(x))],collapse="|"))
  
   #results
-  object$result=data.frame(PersionName=rownames(lventian_edit_dist),score=maxScore, Predicted.EnglishName=bestmatch, EnglishName=object$traindata$EnglishName, BestMatchCount=bestmatchcount, BestMatchedStrings=bestmatchedstrings) 
+  object$result=data.frame(PersionName=rownames(lventian_edit_dist),score=mincost, Predicted.EnglishName=bestmatch, EnglishName=object$traindata$EnglishName, BestMatchCount=bestmatchcount, BestMatchedStrings=bestmatchedstrings) 
   object$resultEditDistance = lventian_edit_dist
   return(object)
 }
 
 score_model.editdistance_scorer <- function(object){
   flog.info("Running score_model.editdistance_scorer")
+  # obtain total correct based on lowest score, provided there is only one low score. Ties are scored as incorrect
   totalcorrect=length(which(as.character(object$result$Predicted.EnglishName) == object$result$EnglishName & object$result$BestMatchCount ==1))
   totalrecords=length(rownames(object$result))
   totalnamechoices = length(colnames(object$result))
@@ -81,6 +85,11 @@ score_model.editdistance_scorer <- function(object){
   #results
   object$totalcorrect=totalcorrect
   object$percentagecorrect=percentagecorrect
+  #significance level is computed using :
+  #         binomial distribution : C(n,r)*p^r*q^(n-r), 
+  #         where p = 1/(total number of english names in dictionary)
+  #               n= total number of records
+  #               r= number of correct answers
   object$significancelevel = choose(totalrecords, totalcorrect)*(1/totalnamechoices)^totalcorrect*((totalnamechoices-1)/totalnamechoices)^(totalrecords-totalcorrect)
   
   
