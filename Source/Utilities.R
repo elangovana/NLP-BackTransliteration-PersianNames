@@ -4,7 +4,7 @@ source("./generic_s3_methods.R")
 
 
 
-set_options <- function(){
+setup_warning_options <- function(){
   options(warning.length = 5000)
   options(warn =1)
 }
@@ -33,8 +33,3 @@ setup_outdir <- function(base_dir, sub_directory_prefix=""){
   return(outdir)
 }
 
-init_named_vector_from_data_frame <- function(df, init_value =0){
-  nv <- rep(init_value, nrow(df))
-  names(nv) <- rownames(df)
-  return(nv)
-}
