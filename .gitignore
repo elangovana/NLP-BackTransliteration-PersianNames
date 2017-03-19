@@ -12,3 +12,4 @@ packrat/lib*/
 packrat/src/
 .Rhistory
 outdat_*
+output/*
