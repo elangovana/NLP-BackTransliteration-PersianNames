@@ -12,6 +12,7 @@ editdistance_scorer <- function(traindata, namesdata, output_dir,i=1,d=1, r=1){
               significancelevel=-1,
               totalcorrect=-1,
               percentagecorrect=-1,
+              resultEditDistance=NULL,
               m=0,
               i=i,
               d=d,
@@ -62,15 +63,18 @@ predict.editdistance_scorer <- function(object){
   #Obtain max score
   maxScore<-apply(lventian_edit_dist, 1, function(x) min(x))
   bestmatch<-apply(lventian_edit_dist, 1, function(x) colnames(lventian_edit_dist)[which.min(x)])
-  #results
-  object$result=data.frame(PersionName=rownames(lventian_edit_dist),score=maxScore, Predicted.EnglishName=bestmatch, EnglishName=object$traindata$EnglishName) 
+  bestmatchcount<-apply(lventian_edit_dist, 1, function(x) length(colnames(lventian_edit_dist)[(x==min(x))]))
+  bestmatchedstrings<-apply(lventian_edit_dist, 1, function(x) paste(colnames(lventian_edit_dist)[(x==min(x))],collapse="|"))
  
+  #results
+  object$result=data.frame(PersionName=rownames(lventian_edit_dist),score=maxScore, Predicted.EnglishName=bestmatch, EnglishName=object$traindata$EnglishName, BestMatchCount=bestmatchcount, BestMatchedStrings=bestmatchedstrings) 
+  object$resultEditDistance = lventian_edit_dist
   return(object)
 }
 
 score_model.editdistance_scorer <- function(object){
   flog.info("Running score_model.editdistance_scorer")
-  totalcorrect=length(which(as.character(object$result$Predicted.EnglishName) == object$result$EnglishName))
+  totalcorrect=length(which(as.character(object$result$Predicted.EnglishName) == object$result$EnglishName & object$result$BestMatchCount ==1))
   totalrecords=length(rownames(object$result))
   totalnamechoices = length(colnames(object$result))
   percentagecorrect = (totalcorrect *100)/totalrecords
@@ -85,7 +89,9 @@ score_model.editdistance_scorer <- function(object){
 
 #This writes all data into file
 write_to_file.editdistance_scorer <- function(object){
+  flog.info("Running write_to_file.editdistance_scorer")
   write.csv(object$result,file.path(object$output_dir, "results.csv"),row.names=FALSE)
+  write.csv(object$resultEditDistance, file.path(object$output_dir, "leventaindistance.csv"))
 }
 
 
