@@ -87,7 +87,7 @@ score_model.editdistance_scorer <- function(object){
   object$percentagecorrect=percentagecorrect
   #significance level is computed using :
   #         binomial distribution : C(n,r)*p^r*q^(n-r), 
-  #         where p = 1/(total number of english names in dictionary)
+  #         where p = 1/(total number of english names to choose from)
   #               n= total number of records
   #               r= number of correct answers
   object$significancelevel = choose(totalrecords, totalcorrect)*(1/totalnamechoices)^totalcorrect*((totalnamechoices-1)/totalnamechoices)^(totalrecords-totalcorrect)
