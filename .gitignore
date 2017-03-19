@@ -1,5 +1,4 @@
 *.class
-
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 # Package Files #
@@ -11,3 +10,5 @@ hs_err_pid*
 .Rproj.user
 packrat/lib*/
 packrat/src/
+.Rhistory
+outdat_*
