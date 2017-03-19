@@ -34,7 +34,6 @@ get_random_seed <- function(x, index){
 
 
 run_pipeline.default <- run_pipeline
-flatten.default <- flatten
 write_to_file.default <- write_to_file
 score_model.default <- score_model
 get_random_seed.default <- get_random_seed

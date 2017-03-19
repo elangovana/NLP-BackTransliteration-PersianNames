@@ -8,7 +8,7 @@ editdistance_scorer <- function(traindata, namesdata, output_dir,i=1,d=1, r=1){
   ####output
   out <- list(traindata = traindata, 
               namesdata = namesdata,
-              result = result,
+              result = NULL,
               significancelevel=-1,
               totalcorrect=-1,
               percentagecorrect=-1,
@@ -85,7 +85,7 @@ score_model.editdistance_scorer <- function(object){
 
 #This writes all data into file
 write_to_file.editdistance_scorer <- function(object){
-  write.csv(result,file.path(object$output_dir, "results.csv"),row.names=FALSE)
+  write.csv(object$result,file.path(object$output_dir, "results.csv"),row.names=FALSE)
 }
 
 
