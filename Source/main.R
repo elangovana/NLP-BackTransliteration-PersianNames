@@ -5,7 +5,7 @@ output_dir ="../output"
 output_dir <- setup_outdir(output_dir)
 
 sink()
-#setup_log(output_dir)
+setup_log(output_dir)
 flog.threshold(INFO)
 set_options()
 
@@ -13,7 +13,7 @@ input_dir = "../input_data"
 
 
 #load data
-traindata <- read.csv(file.path(input_dir, "train.txt"),sep="\t",  header=F, na.strings=c(".",""), as.is=c("PersionName","EnglishName"), col.names = c("PersionName","EnglishName"))[1:50,]
+traindata <- read.csv(file.path(input_dir, "train.txt"),sep="\t",  header=F, na.strings=c(".",""), as.is=c("PersionName","EnglishName"), col.names = c("PersionName","EnglishName"))
 namesdata <- read.csv(file.path(input_dir, "names.txt"), col.names = "EnglishName")
 #global edit distance same scores for r=i=d
 scorer <- editdistance_scorer(traindata,namesdata,output_dir)
