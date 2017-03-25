@@ -1,7 +1,7 @@
 source("./utilities.R")
 source("./editdistance_scorer.R")
 ## main
-output_dir ="../output"
+output_dir ="../../output"
 output_dir <- setup_outdir(output_dir)
 
 sink()
@@ -9,7 +9,7 @@ setup_log(output_dir)
 flog.threshold(INFO)
 setup_warning_options()
 
-input_dir = "../input_data"
+input_dir = "../../input_data"
 
 
 #load data
