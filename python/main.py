@@ -18,7 +18,7 @@ namesdict=os.path.join(dir,"../input_data/names.txt")
 dftraindata = pd.read_csv(traindatacsv, sep='\t', header=None, names=["persianname", "englishname"], dtype=object)
 dfnames = pd.read_csv(namesdict, sep='\t', header=None, names=["name"], keep_default_na=False)
 
-dftraindata = dftraindata.sample(2000)
+#dftraindata = dftraindata.sample(2000)
 
 
 ##run 1

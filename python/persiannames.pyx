@@ -56,7 +56,7 @@ class persiannames:
         self.logger.info("Insert matrix")
         self.logger.info(np.matrix(self.insert_matrix_costs))
         self.logger.info("Delete matrix")
-        self.logger.info(np.matrix(self.delete_cost))
+        self.logger.info(np.matrix(self.delete_matrix_costs))
         self.logger.info("Accuracy ( scored only when exactly one is correct) = " + str(self.accuracy))
         self.logger.info("Precision = " + str(self.precision))
         self.logger.info("--End of summary--")
