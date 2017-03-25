@@ -18,7 +18,7 @@ namesdict=os.path.join(dir,"../input_data/names.txt")
 dftraindata = pd.read_csv(traindatacsv, sep='\t', header=None, names=["persianname", "englishname"], dtype=object)
 dfnames = pd.read_csv(namesdict, sep='\t', header=None, names=["name"], keep_default_na=False)
 
-dftraindata = dftraindata.sample(1000)
+dftraindata = dftraindata.sample(2000)
 
 
 ##run 1
@@ -50,7 +50,9 @@ parser.set_substitution_cost('v', 'u', .1)
 parser.set_substitution_cost('z', 's', .1)
 parser.set_insert_cost('a',.1)
 parser.set_insert_cost('e',.1)
+parser.set_insert_cost('i',.1)
 parser.set_insert_cost('o',.1)
+parser.set_insert_cost('h',.2)
 parser.calculate_edit_distance(dftraindata, dfnames)
 
 
