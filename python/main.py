@@ -6,6 +6,32 @@ import persiannames
 import os
 
 
+def SetUpSubstitutionMatrix(parser):
+    parser.set_substitution_cost('a', 'e', .1)
+    parser.set_substitution_cost('e', 'i', .1)
+    parser.set_substitution_cost('a', 'o', .2)
+    parser.set_substitution_cost('o', 'a', .2)
+    parser.set_substitution_cost('p', 'f', .1)
+    parser.set_substitution_cost('k', 'c', .1)
+    parser.set_substitution_cost('k', 'x', .1)
+    parser.set_substitution_cost('y', 'i', .1)
+    parser.set_substitution_cost('y', 'e', .1)
+    parser.set_substitution_cost('v', 'u', .1)
+    parser.set_substitution_cost('v', 'o', .1)
+    parser.set_substitution_cost('v', 'w', .1)
+    parser.set_substitution_cost('z', 's', .1)
+
+
+def SetupInsertCostMatrix(parser):
+    parser.set_insert_cost('a', .1)
+    parser.set_insert_cost('e', .1)
+    parser.set_insert_cost('i', .1)
+    parser.set_insert_cost('o', .1)
+    parser.set_insert_cost('u', .1)
+    parser.set_insert_cost('h', .2)
+
+######Main##########
+
 dir = os.path.dirname(__file__)
 out_dir=os.path.join(os.path.dirname(__file__),"../outputdata/train_{}".format(time.strftime('%Y%m%d_%H%M%S')))
 os.makedirs(out_dir)
@@ -18,41 +44,29 @@ namesdict=os.path.join(dir,"../input_data/names.txt")
 dftraindata = pd.read_csv(traindatacsv, sep='\t', header=None, names=["persianname", "englishname"], dtype=object)
 dfnames = pd.read_csv(namesdict, sep='\t', header=None, names=["name"], keep_default_na=False)
 
-#dftraindata = dftraindata.sample(2000)
+dftraindata = dftraindata.sample(2000)
 
 
 ##run 1
-resultsdir=os.path.join(out_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
-os.makedirs(resultsdir)
-parser= persiannames.persiannames(resultsdir,logger, insert_cost =1, delete_cost=1, substitute_cost=1)
-parser.calculate_edit_distance(dftraindata, dfnames)
+# resultsdir=os.path.join(out_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
+# os.makedirs(resultsdir)
+# parser= persiannames.persiannames(resultsdir,logger, insert_cost =1, delete_cost=1, substitute_cost=1)
+# parser.calculate_edit_distance(dftraindata, dfnames)
 
 ##run 2
-resultsdir=os.path.join(out_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
-os.makedirs(resultsdir)
-parser= persiannames.persiannames(resultsdir,logger, insert_cost =1, delete_cost=3, substitute_cost=2)
-parser.calculate_edit_distance(dftraindata, dfnames)
+# resultsdir=os.path.join(out_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
+# os.makedirs(resultsdir)
+# parser= persiannames.persiannames(resultsdir,logger, insert_cost =1, delete_cost=3, substitute_cost=2)
+# parser.calculate_edit_distance(dftraindata, dfnames)
 
 ##run with weighted replacement cost
 resultsdir=os.path.join(out_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
 os.makedirs(resultsdir)
 parser= persiannames.persiannames(resultsdir,logger, insert_cost =1, delete_cost=2, substitute_cost=1)
-parser.set_substitution_cost('a', 'e', .1)
-parser.set_substitution_cost('e', 'i', .1)
-parser.set_substitution_cost('a', 'o', .2)
-parser.set_substitution_cost('o', 'a', .2)
-parser.set_substitution_cost('p', 'f', .1)
-parser.set_substitution_cost('c', 'k', .1)
-parser.set_substitution_cost('k', 'x', .1)
-parser.set_substitution_cost('i', 'y', .1)
-parser.set_substitution_cost('y', 'e', .1)
-parser.set_substitution_cost('v', 'u', .1)
-parser.set_substitution_cost('z', 's', .1)
-parser.set_insert_cost('a',.1)
-parser.set_insert_cost('e',.1)
-parser.set_insert_cost('i',.1)
-parser.set_insert_cost('o',.1)
-parser.set_insert_cost('h',.2)
+SetUpSubstitutionMatrix(parser)
+SetupInsertCostMatrix(parser)
 parser.calculate_edit_distance(dftraindata, dfnames)
+
+
 
 

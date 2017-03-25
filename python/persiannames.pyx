@@ -59,6 +59,7 @@ class persiannames:
         self.logger.info(np.matrix(self.delete_matrix_costs))
         self.logger.info("Accuracy ( scored only when exactly one is correct) = " + str(self.accuracy))
         self.logger.info("Precision = " + str(self.precision))
+        self.logger.info("Recall = " + str(self.recall))
         self.logger.info("--End of summary--")
 
 
@@ -117,12 +118,14 @@ class persiannames:
         self.accuracy= float(self.totalaccuratelycorrect) / float(dftraindata.shape[0])
         self.totatcorrect=(result[(result['englishname'] == result['name'])]).shape[0]
         self.precision = float(self.totatcorrect) / float(result.shape[0])
+        self.recall = float(self.totatcorrect) / float(dftraindata.shape[0])
         self.result = result;
         self.result.to_csv(os.path.join(self.out_dir,"persiansnamespredicted.csv"))
 
         self.LogSummary()
         print("Accuracy = " + str(self.accuracy))
         print("Precision = " + str(self.precision))
+        print("Recall = " + str(self.recall))
 
 
 
