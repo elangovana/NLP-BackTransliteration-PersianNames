@@ -26,56 +26,60 @@ class persiannames:
         self.SetupBlosumMatrix()
 
     def SetupBlosumMatrix(self):
-        self.insert_matrix_costs = np.ones(128, dtype=np.float64)  # make an array of all 1's of size 128, the number of ASCII characters
+        self.insert_matrix_costs = np.full(128, self.insert_cost, dtype=np.float64)  # make an array of all 1's of size 128, the number of ASCII characters
         # insert_costs[ord('D')] = 1.5  # make inserting the character 'D' have cost 1.5 (instead of 1)
 
         # you can just specify the insertion costs
         # delete_costs and substitute_costs default to 1 for all characters if unspecified
         # print lev(source, dest, insert_costs=insert_costs)  # prints '1.5'
 
-        self.delete_matrix_costs = np.ones(128, dtype=np.float64)
+        self.delete_matrix_costs = np.full(128, self.delete_cost, dtype=np.float64)
         # delete_costs[ord('S')] = 0.5  # make deleting the character 'S' have cost 0.5 (instead of 1)
 
         # or you can specify both insertion and deletion costs (though in this case insertion costs don't matter)
         # print lev(source, dest, insert_costs=insert_costs, delete_costs=delete_costs)  # prints '0.5'
 
 
-        self.substitute_matrix_costs = np.ones((128, 128), dtype=np.float64)  # make a 2D array of 1's
+        self.substitute_matrix_costs = np.full((128, 128), self.substitute_cost, dtype=np.float64)  # make a 2D array of 1's
 
 
         #self.replacement_cost('a','e')
         # substitute_costs[ord('H'), ord('B')] = 1.25  # make substituting 'H' for 'B' cost 1.25
 
+    def LogSummary(self):
+        self.logger.info("--Summary--")
+        self.logger.info("Substitution cost :" + str(self.substitute_cost))
+        self.logger.info("Delete cost" +":" + str(self.delete_cost))
+        self.logger.info("Insert Cost" + ":" + str(self.insert_cost))
+        self.logger.info("Subsutitution matrix")
+        self.logger.info(np.matrix(self.substitute_matrix_costs))
+        self.logger.info("Accuracy ( scored only when exactly one is correct) = " + str(self.accuracy))
+        self.logger.info("Precision = " + str(self.precision))
+        self.logger.info("--End of summary--")
+
+
+
     def calculate_edit_distance(self, dftraindata, dfnames):
 
-        self.logger.info (dftraindata.shape)
+        self.logger.info ("Train data rows, cols = " +str(dftraindata.shape))
         # dftraindata["predicted.englishname"]=dftraindata.apply(lambda r: "a",axis=1 )
         # dftraindata["bestmatchcount"]=dftraindata.apply(lambda r: 0,axis=1  )
         # dftraindata["bestcost"]=dftraindata.apply(lambda r: 1000,axis=1  )
 
-        self.logger.info(time.time())
         dfnames['tmp']=1
         dftraindata['tmp']=1
         dftraindata['persianname']=(dftraindata['persianname'].apply(lambda x: x.lower()))
 
-        start = time.time()
-
 
         dfmerged = pd.merge(dftraindata,dfnames )
-
-        end = time.time()
-        print ("merge time for cost")
-        print(end - start)
-
 
 
         #calc cost
         start = time.time()
         vGetWeightedDistance = np.vectorize(self.GetWeightedDistance)
         dfmerged['cost']=vGetWeightedDistance(dfmerged['persianname'], dfmerged['name'])
-        end = time.time()
-        self.logger.info ("time for cost with vector")
-        self.logger.info(end - start)
+        self.logger.info ("Time taken(sec) for calculating edit distance = " + str( time.time() - start))
+
 
 
         #calc cost
@@ -86,21 +90,17 @@ class persiannames:
         # print ("time for cost")
         # print(end - start)
 
-        #group
+        #Get min cost
         start = time.time()
         grpd = dfmerged.groupby(['persianname'] ,as_index = False).agg({'cost':'min'})
-        # print (grpd)
-        # grpd = grpd.groupby(['persianname'],as_index = False).agg(['count'])
-        end = time.time()
-        self.logger.info ("time for group")
-        self.logger.info(end - start)
+        self.logger.info ("Time taken(sec) for grouping by persian name for min cost= " + str(time.time() - start))
 
-
+        # Set up result
+        start = time.time()
         result=pd.merge(grpd,dfmerged )
-
         grpd=pd.DataFrame(result.groupby(['persianname'], as_index=False).size().rename('counts'))
-
         result=pd.merge(result,grpd ,left_on=['persianname'], right_index=True)
+        self.logger.info("Time taken(sec) for grouping by persian name for counts of results" + str(time.time() - start))
 
         #dftraindata=dftraindata[0:5]
         #calc
@@ -109,14 +109,16 @@ class persiannames:
         # print(time.time() - start)
 
         #Result
-        self.totalcorrect=(result[(result['counts']==1) & (result['englishname']==result['name'])]).shape[0]
-        self.accuracy=float(self.totalcorrect)/float(dftraindata.shape[0])
+        self.totalaccuratelycorrect=(result[(result['counts'] == 1) & (result['englishname'] == result['name'])]).shape[0]
+        self.accuracy= float(self.totalaccuratelycorrect) / float(dftraindata.shape[0])
+        self.totatcorrect=(result[(result['englishname'] == result['name'])]).shape[0]
+        self.precision = float(self.totatcorrect) / float(result.shape[0])
         self.result = result;
         self.result.to_csv(os.path.join(self.out_dir,"persiansnamespredicted.csv"))
-        self.logger.info("Total correct: "+str(self.totalcorrect))
-        self.logger.info("Accuracy"+str(self.accuracy))
 
-        print("Accuracy" + str(self.accuracy))
+        self.LogSummary()
+        print("Accuracy = " + str(self.accuracy))
+        print("Precision = " + str(self.precision))
 
 
 
@@ -179,5 +181,10 @@ class persiannames:
 # 0.166166166166
 
     def set_substitution_cost(self, char1, char2, cost):
+        self.logger.info("Setting substitution cost {} for character {}, {}".format(cost, char1, char2))
         self.substitute_matrix_costs[ord(char1), ord(char2)] = cost
-        self.substitute_matrix_costs[ord(char2), ord(char1)] = cost
+
+
+    def set_insert_cost(self, char1,  cost):
+        self.logger.info("Setting insert cost {} for character {}".format(cost, char1,))
+        self.insert_matrix_costs[ord(char1)] =cost
