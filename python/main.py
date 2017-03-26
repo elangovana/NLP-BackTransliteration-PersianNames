@@ -52,31 +52,30 @@ namesdict=os.path.join(dir,"../input_data/names.txt")
 dftraindataO = pd.read_csv(traindatacsv, sep='\t', header=None, names=["persianname", "englishname"], dtype=object)
 dfnamesO = pd.read_csv(namesdict, sep='\t', header=None, names=["name"], keep_default_na=False)
 
-dftraindataO = dftraindataO.sample(50)
+#dftraindataO = dftraindataO.sample(50)
 
-#
-# ##run 1
 
-# resultsdir=os.path.join(out_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
-# os.makedirs(resultsdir)
-# parser= editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=1, substitute_cost=1)
-# parser.calculate_edit_distance(dftraindataO.copy(), dfnamesO.copy())
-#
-# ##run 2
-# resultsdir=os.path.join(out_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
-# os.makedirs(resultsdir)
-# parser= editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=3, substitute_cost=2)
-# parser.calculate_edit_distance(dftraindataO.copy(), dfnamesO.copy())
-#
-# ##run with weighted replacement cost
-# resultsdir=os.path.join(out_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
-# os.makedirs(resultsdir)
-# parser= editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=2, substitute_cost=1)
-# SetUpSubstitutionMatrix(parser)
-# parser.calculate_edit_distance(dftraindataO.copy(), dfnamesO.copy())
-#
-#
-# ##run with weighted replacement  + insert cost cost
+##run 1
+
+resultsdir=os.path.join(out_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
+os.makedirs(resultsdir)
+parser= editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=1, substitute_cost=1)
+parser.calculate_edit_distance(dftraindataO.copy(), dfnamesO.copy())
+
+##run 2
+resultsdir=os.path.join(out_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
+os.makedirs(resultsdir)
+parser= editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=3, substitute_cost=2)
+parser.calculate_edit_distance(dftraindataO.copy(), dfnamesO.copy())
+
+##run 3 with weighted replacement cost
+resultsdir=os.path.join(out_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
+os.makedirs(resultsdir)
+parser= editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=2, substitute_cost=1)
+SetUpSubstitutionMatrix(parser)
+parser.calculate_edit_distance(dftraindataO.copy(), dfnamesO.copy())
+
+# ##run 4 with weighted replacement  + insert cost cost
 resultsdir=os.path.join(out_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
 os.makedirs(resultsdir)
 parser= editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=2, substitute_cost=1)
@@ -84,16 +83,20 @@ SetupInsertCostMatrix(parser)
 SetUpSubstitutionMatrix(parser)
 parser.calculate_edit_distance(dftraindataO.copy(), dfnamesO.copy())
 
-##run soundexpredictor
+##run  5 soundexpredictor
 resultsdir=os.path.join(out_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
 os.makedirs(resultsdir)
 parser= soundexmatch(resultsdir,logger, insert_cost =1, delete_cost=1, substitute_cost=1)
 parser.calculate_edit_distance(dftraindataO.copy(), dfnamesO.copy())
 
-
-
-##run ngram
+##run  6 ngram = 1
 resultsdir=os.path.join(out_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
 os.makedirs(resultsdir)
 parser= ngrammatch(resultsdir,logger, ngram=1)
+parser.calculate_edit_distance(dftraindataO.copy(), dfnamesO.copy())
+
+##run 7 ngram = 2
+resultsdir=os.path.join(out_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
+os.makedirs(resultsdir)
+parser= ngrammatch(resultsdir,logger, ngram=2)
 parser.calculate_edit_distance(dftraindataO.copy(), dfnamesO.copy())
