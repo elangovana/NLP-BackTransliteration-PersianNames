@@ -11,7 +11,7 @@ setup(
     license='',
     author='Team bluebird',
     author_email='',
-    description='', requires=['numpy','weighted_levenshtein','pandas', 'fuzzy'],
+    description='', requires=['numpy','weighted_levenshtein','pandas', 'fuzzy', 'ngram'],
     ext_modules = cythonize("*.pyx", **ext_options)
 
 )

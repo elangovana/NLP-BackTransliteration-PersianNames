@@ -22,26 +22,23 @@ class soundexmatch(editdistancematch):
         editdistancematch.__init__(self, out_dir, logger, insert_cost, delete_cost, substitute_cost)
 
 
-
-
-
-
-
     def calculate_edit_distance(self, dftraindata, dfnames):
 
         self.logger.info ("Train data rows, cols = " +str(dftraindata.shape))
-        # dftraindata["predicted.englishname"]=dftraindata.apply(lambda r: "a",axis=1 )
-        # dftraindata["bestmatchcount"]=dftraindata.apply(lambda r: 0,axis=1  )
-        # dftraindata["bestcost"]=dftraindata.apply(lambda r: 1000,axis=1  )
 
-        dfnames['tmp']=1
-        dftraindata['tmp']=1
+        # pre processing - lowercase
         dftraindata['persianname']=(dftraindata['persianname'].apply(lambda x: x.lower()))
+
+        #obtain soundex
+        start = time.time()
         soundex = fuzzy.Soundex(4)
         dftraindata['persiannamesoundex'] = (dftraindata['persianname'].apply(lambda x:soundex(x)))
         dfnames['namesoundex'] = (dfnames['name'].apply(lambda x: soundex(x)))
+        self.logger.info("Time taken(sec) for calculating soundex" + str(time.time() - start))
 
-
+        #set up merged df
+        dfnames['tmp']=1
+        dftraindata['tmp']=1
         dfmerged = pd.merge(dftraindata,dfnames )
 
 
@@ -50,16 +47,6 @@ class soundexmatch(editdistancematch):
         vGetWeightedDistance = np.vectorize(self.GetWeightedDistance)
         dfmerged['cost']=vGetWeightedDistance(dfmerged['persiannamesoundex'], dfmerged['namesoundex'])
         self.logger.info ("Time taken(sec) for calculating edit distance = " + str( time.time() - start))
-
-
-
-        #calc cost
-        # start = time.time()
-        # dfmerged['cost']=dfmerged.apply(lambda x: self.GetWeightedDistance(x['persianname'], x['name']),axis=1 )
-        #
-        # end = time.time()
-        # print ("time for cost")
-        # print(end - start)
 
         #Get min cost
         start = time.time()
@@ -73,11 +60,6 @@ class soundexmatch(editdistancematch):
         result=pd.merge(result,grpd ,left_on=['persianname'], right_index=True)
         self.logger.info("Time taken(sec) for grouping by persian name for counts of results" + str(time.time() - start))
 
-        #dftraindata=dftraindata[0:5]
-        #calc
-        # start = time.time()
-        # self.method_name_old_style(dfnames, dftraindata)
-        # print(time.time() - start)
 
         #Result
         self.totalaccuratelycorrect=(result[(result['counts'] == 1) & (result['englishname'] == result['name'])]).shape[0]
