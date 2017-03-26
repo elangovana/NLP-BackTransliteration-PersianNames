@@ -1,8 +1,11 @@
+from editdistancematch import editdistancematch
+from soundexmatch import soundexmatch
+
 __author__ = 'aparnaelangovan'
 import time
 import pandas as pd
 from setup_logger import setup_log
-import persiannames
+
 import os
 
 
@@ -14,12 +17,15 @@ def SetUpSubstitutionMatrix(parser):
     parser.set_substitution_cost('p', 'f', .1)
     parser.set_substitution_cost('k', 'c', .1)
     parser.set_substitution_cost('k', 'x', .1)
+    parser.set_substitution_cost('x', 'k', .1)
     parser.set_substitution_cost('y', 'i', .1)
     parser.set_substitution_cost('y', 'e', .1)
     parser.set_substitution_cost('v', 'u', .1)
     parser.set_substitution_cost('v', 'o', .1)
     parser.set_substitution_cost('v', 'w', .1)
     parser.set_substitution_cost('z', 's', .1)
+    parser.set_substitution_cost('z', 'j', .2)
+    parser.set_substitution_cost('s', 'c', .4)
 
 
 def SetupInsertCostMatrix(parser):
@@ -46,27 +52,42 @@ dfnames = pd.read_csv(namesdict, sep='\t', header=None, names=["name"], keep_def
 
 dftraindata = dftraindata.sample(2000)
 
-
-##run 1
+#
+# ##run 1
 # resultsdir=os.path.join(out_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
 # os.makedirs(resultsdir)
-# parser= persiannames.persiannames(resultsdir,logger, insert_cost =1, delete_cost=1, substitute_cost=1)
+# parser= editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=1, substitute_cost=1)
 # parser.calculate_edit_distance(dftraindata, dfnames)
-
-##run 2
+#
+# ##run 2
 # resultsdir=os.path.join(out_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
 # os.makedirs(resultsdir)
-# parser= persiannames.persiannames(resultsdir,logger, insert_cost =1, delete_cost=3, substitute_cost=2)
+# parser= editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=3, substitute_cost=2)
+# parser.calculate_edit_distance(dftraindata, dfnames)
+#
+# ##run with weighted replacement cost
+# resultsdir=os.path.join(out_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
+# os.makedirs(resultsdir)
+# parser= editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=2, substitute_cost=1)
+# SetUpSubstitutionMatrix(parser)
+# parser.calculate_edit_distance(dftraindata, dfnames)
+#
+#
+# ##run with weighted replacement  + insert cost cost
+# resultsdir=os.path.join(out_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
+# os.makedirs(resultsdir)
+# parser= editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=2, substitute_cost=1)
+# SetupInsertCostMatrix(parser)
+# SetUpSubstitutionMatrix(parser)
 # parser.calculate_edit_distance(dftraindata, dfnames)
 
-##run with weighted replacement cost
+##run soundexpredictor
 resultsdir=os.path.join(out_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
 os.makedirs(resultsdir)
-parser= persiannames.persiannames(resultsdir,logger, insert_cost =1, delete_cost=2, substitute_cost=1)
-SetUpSubstitutionMatrix(parser)
+parser= soundexmatch(resultsdir,logger, insert_cost =1, delete_cost=1, substitute_cost=1)
 SetupInsertCostMatrix(parser)
+SetUpSubstitutionMatrix(parser)
 parser.calculate_edit_distance(dftraindata, dfnames)
-
 
 
 

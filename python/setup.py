@@ -11,7 +11,7 @@ setup(
     license='',
     author='Team bluebird',
     author_email='',
-    description='', requires=['numpy','weighted_levenshtein','pandas'],
-    ext_modules = cythonize("persiannames.pyx", **ext_options)
+    description='', requires=['numpy','weighted_levenshtein','pandas', 'fuzzy'],
+    ext_modules = cythonize("*.pyx", **ext_options)
 
 )

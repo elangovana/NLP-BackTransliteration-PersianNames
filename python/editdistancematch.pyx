@@ -14,7 +14,7 @@ from weighted_levenshtein import lev, osa, dam_lev
 import pandas as pd
 import time
 
-class persiannames:
+class editdistancematch:
     def __init__(self, out_dir, logger=None, insert_cost =1, delete_cost=1, substitute_cost=1):
         self.substitute_cost = substitute_cost
         self.delete_cost = delete_cost
