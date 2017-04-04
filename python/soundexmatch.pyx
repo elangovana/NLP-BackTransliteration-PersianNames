@@ -2,7 +2,6 @@ import timeit
 
 import logging
 
-import utilities
 from editdistancematch import editdistancematch
 
 from setup_logger import setup_log

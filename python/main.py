@@ -1,15 +1,14 @@
+
+__author__ = 'aparnaelangovan'
+
 import getopt
 import sys
-
 from editdistancematch import editdistancematch
 from ngrammatch import ngrammatch
 from soundexmatch import soundexmatch
-
-__author__ = 'aparnaelangovan'
 import time
 import pandas as pd
 from setup_logger import setup_log
-
 import os
 
 
@@ -44,6 +43,14 @@ def SetupInsertCostMatrix(parser):
     # parser.set_insert_cost('w', .2)
     # parser.set_insert_cost('v', .2)
 
+def SetupInsertCostMatrix2(parser):
+    parser.set_insert_cost('a', .1)
+    parser.set_insert_cost('e', .1)
+    parser.set_insert_cost('i', .1)
+    parser.set_insert_cost('o', .1)
+    parser.set_insert_cost('u', .1)
+    parser.set_insert_cost('h', .2)
+
 def Process(traindatacsv, namesdictionary, output_dir, samplesize=2000 ):
 
     traindatacsv=os.path.join(os.path.dirname(__file__),traindatacsv)
@@ -64,12 +71,14 @@ def Process(traindatacsv, namesdictionary, output_dir, samplesize=2000 ):
     ##run 1
     resultsdir=os.path.join(output_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
     os.makedirs(resultsdir)
+    logger.info("----Running editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=1, substitute_cost=1)")
     parser= editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=1, substitute_cost=1)
     parser.calculate_edit_distance(dftraindataO.copy(), dfnamesO.copy())
 
     ##run 2
     resultsdir=os.path.join(output_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
     os.makedirs(resultsdir)
+    logger.info("----Running editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=3, substitute_cost=2)")
     parser= editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=3, substitute_cost=2)
     parser.calculate_edit_distance(dftraindataO.copy(), dfnamesO.copy())
 
@@ -77,28 +86,32 @@ def Process(traindatacsv, namesdictionary, output_dir, samplesize=2000 ):
     ##run 3.0 with weighted replacement cost
     resultsdir=os.path.join(output_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
     os.makedirs(resultsdir)
+    logger.info("----Running with weighted replacement cost editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=2, substitute_cost=1)")
     parser= editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=2, substitute_cost=1)
     SetUpSubstitutionMatrix(parser)
     parser.calculate_edit_distance(dftraindataO.copy(), dfnamesO.copy())
 
 
-    ##run 3 with weighted replacement cost
+    ##run 4 with weighted replacement cost
     resultsdir=os.path.join(output_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
     os.makedirs(resultsdir)
+    logger.info("----Running with weighted replacement cost editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=3, substitute_cost=2)")
     parser= editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=3, substitute_cost=2)
     SetUpSubstitutionMatrix(parser)
     parser.calculate_edit_distance(dftraindataO.copy(), dfnamesO.copy())
 
 
-    # ##run 4 with weighted replacement  + insert cost cost
+    # ##run 5 with weighted replacement  + insert cost cost
     resultsdir=os.path.join(output_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
     os.makedirs(resultsdir)
+    logger.info(
+        "----Running with weighted replacement cost editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=2, substitute_cost=1)")
     parser= editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=2, substitute_cost=1)
     SetupInsertCostMatrix(parser)
     SetUpSubstitutionMatrix(parser)
     parser.calculate_edit_distance(dftraindataO.copy(), dfnamesO.copy())
 
-    # ##run 4 with weighted replacement  + insert cost cost
+    # ##run 6 with weighted replacement  + insert cost cost
     resultsdir=os.path.join(output_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
     os.makedirs(resultsdir)
     parser= editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=3, substitute_cost=2)
@@ -106,20 +119,27 @@ def Process(traindatacsv, namesdictionary, output_dir, samplesize=2000 ):
     SetUpSubstitutionMatrix(parser)
     parser.calculate_edit_distance(dftraindataO.copy(), dfnamesO.copy())
 
+    # ##run 6 with weighted replacement  + insert cost cost
+    resultsdir = os.path.join(output_dir, "Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
+    os.makedirs(resultsdir)
+    parser = editdistancematch(resultsdir, logger, insert_cost=1, delete_cost=3, substitute_cost=2)
+    SetupInsertCostMatrix2(parser)
+    SetUpSubstitutionMatrix(parser)
+    parser.calculate_edit_distance(dftraindataO.copy(), dfnamesO.copy())
 
-    ##run  5 soundexpredictor
+    ##run  7 soundexpredictor
     resultsdir=os.path.join(output_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
     os.makedirs(resultsdir)
     parser= soundexmatch(resultsdir,logger, insert_cost =1, delete_cost=1, substitute_cost=1)
     parser.calculate_edit_distance(dftraindataO.copy(), dfnamesO.copy())
 
-    ##run  6 ngram = 1
+    ##run  8 ngram = 1
     resultsdir=os.path.join(output_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
     os.makedirs(resultsdir)
     parser= ngrammatch(resultsdir,logger, ngram=1)
     parser.calculate_edit_distance(dftraindataO.copy(), dfnamesO.copy())
 
-    ##run 7 ngram = 2
+    ##run 9 ngram = 2
     resultsdir=os.path.join(output_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
     os.makedirs(resultsdir)
     parser= ngrammatch(resultsdir,logger, ngram=2)
@@ -130,7 +150,7 @@ def main(argv):
     inputfile="../input_data/train.txt"
     namesDict="../input_data/names.txt"
     outdir="../output/train_{}".format(time.strftime('%Y%m%d_%H%M%S'))
-    samplesize=2000
+    samplesize=100
     try:
         opts, args = getopt.getopt(argv, "hi:n:o:s", ["ifile=", "nfile=","outdir=" "samplesize="])
     except getopt.GetoptError:
@@ -150,32 +170,6 @@ def main(argv):
             samplesize = int(arg)
     Process(inputfile, namesDict, outdir, samplesize)
 
-    # Accuracy = 0.437225571184
-    # Precision = 0.402170542636
-    # Recall = 0.579147131056
-
-# 2000 run 1 no h insert
-# Accuracy = 0.4365
-# Precision = 0.376561972307
-# Recall = 0.5575
-# 2000 run 2 - no h insert
-# Accuracy = 0.4335
-# Precision = 0.375634517766
-# Recall = 0.555
-#with h
-# Accuracy = 0.4715
-# Precision = 0.426229508197
-# Recall = 0.585
-# Accuracy = 0.4685
-# Precision = 0.411826452064
-# Recall = 0.5885
-#no pseudo
-# Accuracy = 0.451
-# Precision = 0.397997928892
-# Recall = 0.5765
-# Accuracy = 0.46
-# Precision = 0.402079722704
-# Recall = 0.58
 
 if __name__ == "__main__":
    main(sys.argv[1:])

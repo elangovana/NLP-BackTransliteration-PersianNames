@@ -1,8 +1,6 @@
 import timeit
 
 import logging
-
-import utilities
 from setup_logger import setup_log
 
 __author__ = 'aparnaelangovan'
