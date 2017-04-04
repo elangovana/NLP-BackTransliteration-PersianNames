@@ -21,28 +21,14 @@ class editdistancematch:
         self.logger = logger
         self.logger = logger or logging.getLogger(__name__)
         # setup
-        self.SetupBlosumMatrix()
+        self.SetupCostMatrix()
 
-    def SetupBlosumMatrix(self):
+    def SetupCostMatrix(self):
         self.insert_matrix_costs = np.full(128, self.insert_cost, dtype=np.float64)  # make an array of all 1's of size 128, the number of ASCII characters
-        # insert_costs[ord('D')] = 1.5  # make inserting the character 'D' have cost 1.5 (instead of 1)
-
-        # you can just specify the insertion costs
-        # delete_costs and substitute_costs default to 1 for all characters if unspecified
-        # print lev(source, dest, insert_costs=insert_costs)  # prints '1.5'
 
         self.delete_matrix_costs = np.full(128, self.delete_cost, dtype=np.float64)
-        # delete_costs[ord('S')] = 0.5  # make deleting the character 'S' have cost 0.5 (instead of 1)
-
-        # or you can specify both insertion and deletion costs (though in this case insertion costs don't matter)
-        # print lev(source, dest, insert_costs=insert_costs, delete_costs=delete_costs)  # prints '0.5'
-
 
         self.substitute_matrix_costs = np.full((128, 128), self.substitute_cost, dtype=np.float64)  # make a 2D array of 1's
-
-
-        #self.replacement_cost('a','e')
-        # substitute_costs[ord('H'), ord('B')] = 1.25  # make substituting 'H' for 'B' cost 1.25
 
     def LogSummary(self):
         self.logger.info("--Summary--")
