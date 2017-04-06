@@ -69,49 +69,50 @@ def Process(traindatacsv, namesdictionary, output_dir, samplesize=2000 ):
 
 
     ##run 1
+    logger.info("----Running 1 editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=1, substitute_cost=1)")
     resultsdir=os.path.join(output_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
     os.makedirs(resultsdir)
-    logger.info("----Running editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=1, substitute_cost=1)")
     parser= editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=1, substitute_cost=1)
     parser.calculate_edit_distance(dftraindataO.copy(), dfnamesO.copy())
 
     ##run 2
+    logger.info("----Running 2 editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=3, substitute_cost=2)")
     resultsdir=os.path.join(output_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
     os.makedirs(resultsdir)
-    logger.info("----Running editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=3, substitute_cost=2)")
     parser= editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=3, substitute_cost=2)
     parser.calculate_edit_distance(dftraindataO.copy(), dfnamesO.copy())
 
 
     ##run 3.0 with weighted replacement cost
+    logger.info("----Running 3 with weighted replacement cost editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=2, substitute_cost=1)")
     resultsdir=os.path.join(output_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
     os.makedirs(resultsdir)
-    logger.info("----Running with weighted replacement cost editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=2, substitute_cost=1)")
     parser= editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=2, substitute_cost=1)
     SetUpSubstitutionMatrix(parser)
     parser.calculate_edit_distance(dftraindataO.copy(), dfnamesO.copy())
 
 
     ##run 4 with weighted replacement cost
+    logger.info("----Running 4 with weighted replacement cost editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=3, substitute_cost=2)")
     resultsdir=os.path.join(output_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
     os.makedirs(resultsdir)
-    logger.info("----Running with weighted replacement cost editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=3, substitute_cost=2)")
     parser= editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=3, substitute_cost=2)
     SetUpSubstitutionMatrix(parser)
     parser.calculate_edit_distance(dftraindataO.copy(), dfnamesO.copy())
 
 
     # ##run 5 with weighted replacement  + insert cost cost
+    logger.info(
+        "----Running 5 with weighted replacement cost ")
     resultsdir=os.path.join(output_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
     os.makedirs(resultsdir)
-    logger.info(
-        "----Running with weighted replacement cost editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=2, substitute_cost=1)")
     parser= editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=2, substitute_cost=1)
     SetupInsertCostMatrix(parser)
     SetUpSubstitutionMatrix(parser)
     parser.calculate_edit_distance(dftraindataO.copy(), dfnamesO.copy())
 
     # ##run 6 with weighted replacement  + insert cost cost
+    logger.info("----Running 6--")
     resultsdir=os.path.join(output_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
     os.makedirs(resultsdir)
     parser= editdistancematch(resultsdir, logger, insert_cost =1, delete_cost=3, substitute_cost=2)
@@ -120,6 +121,7 @@ def Process(traindatacsv, namesdictionary, output_dir, samplesize=2000 ):
     parser.calculate_edit_distance(dftraindataO.copy(), dfnamesO.copy())
 
     # ##run 6 with weighted replacement  + insert cost cost
+    logger.info("----Running 7--")
     resultsdir = os.path.join(output_dir, "Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
     os.makedirs(resultsdir)
     parser = editdistancematch(resultsdir, logger, insert_cost=1, delete_cost=3, substitute_cost=2)
@@ -128,18 +130,21 @@ def Process(traindatacsv, namesdictionary, output_dir, samplesize=2000 ):
     parser.calculate_edit_distance(dftraindataO.copy(), dfnamesO.copy())
 
     ##run  7 soundexpredictor
+    logger.info("----Running 8--")
     resultsdir=os.path.join(output_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
     os.makedirs(resultsdir)
     parser= soundexmatch(resultsdir,logger, insert_cost =1, delete_cost=1, substitute_cost=1)
     parser.calculate_edit_distance(dftraindataO.copy(), dfnamesO.copy())
 
     ##run  8 ngram = 1
+    logger.info("----Running 9--")
     resultsdir=os.path.join(output_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
     os.makedirs(resultsdir)
     parser= ngrammatch(resultsdir,logger, ngram=1)
     parser.calculate_edit_distance(dftraindataO.copy(), dfnamesO.copy())
 
     ##run 9 ngram = 2
+    logger.info("----Running 10--")
     resultsdir=os.path.join(output_dir,"Run_{}".format(time.strftime('%Y%m%d_%H%M%S')))
     os.makedirs(resultsdir)
     parser= ngrammatch(resultsdir,logger, ngram=2)
@@ -150,7 +155,7 @@ def main(argv):
     inputfile="../input_data/train.txt"
     namesDict="../input_data/names.txt"
     outdir="../output/train_{}".format(time.strftime('%Y%m%d_%H%M%S'))
-    samplesize=100
+    samplesize=0
     try:
         opts, args = getopt.getopt(argv, "hi:n:o:s", ["ifile=", "nfile=","outdir=" "samplesize="])
     except getopt.GetoptError:
