@@ -16,7 +16,7 @@ To get help
 > python main.py -h
 
 To run this script using training data traindata.txt, with names dictionary names.txt and use only 100 records from the training data, with output in outdir use
-> python main.py -i traindata.txt -n names.txt -o outdir -s 100
+> python main.py -i traindata.txt -n names.txt -o outdir --samplesize 100
   
 ## Input data format
 
