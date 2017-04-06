@@ -171,7 +171,7 @@ def main(argv):
             outdir = arg
         elif opt in ("-n", "--nfile"):
             namesDict = arg
-        elif opt in ("s", "--samplesize"):
+        elif opt in ("-s", "--samplesize"):
             samplesize = int(arg)
     Process(inputfile, namesDict, outdir, samplesize)
 
