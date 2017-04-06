@@ -157,7 +157,7 @@ def main(argv):
     outdir="../output/train_{}".format(time.strftime('%Y%m%d_%H%M%S'))
     samplesize=0
     try:
-        opts, args = getopt.getopt(argv, "hi:n:o:s", ["ifile=", "nfile=","outdir=" "samplesize="])
+        opts, args = getopt.getopt(argv, "hi:n:o:s", ["ifile=", "nfile=","outdir=" ,"samplesize="])
     except getopt.GetoptError:
         print 'main.py -i <inputfile> -n <namesdictionaryfile> -o <outputdir>  [-s  <samplesize>]'
         sys.exit(2)
