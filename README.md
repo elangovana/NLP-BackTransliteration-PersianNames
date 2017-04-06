@@ -8,12 +8,15 @@ This Python scripts uses edit distance to predict Latin spellings from Persian.
     pip install cython
 
 ### Set up this python module.
-python setup.py develop
+In your virtual environment run 
+> python setup.py develop
 
-### Set up this python module.
-python setup.py develop
+### How to run 
+To get help
+> python main.py -h
 
-
+To run this script using training data traindata.txt, with names dictionary names.txt and use only 100 records from the training data, with output in outdir use
+> python main.py -i traindata.txt -n names.txt -o outdir -s 100
   
 ## Input data format
 
